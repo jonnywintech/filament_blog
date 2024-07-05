@@ -21,7 +21,7 @@ class PostFactory extends Factory
         $category_id = $category->id;
 
         return [
-            'thumbnail' => fake()->image,
+            'thumbnail' => 'https://picsum.photos/200',
             'title' => fake()->word(1),
             'color' => fake()->hexColor,
             'slug' => fake()->slug,
