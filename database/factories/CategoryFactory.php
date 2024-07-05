@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Tag>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Category>
  */
-class TagFactory extends Factory
+class CategoryFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -16,11 +16,9 @@ class TagFactory extends Factory
      */
     public function definition(): array
     {
-        $id = rand(1,10);
-
         return [
-            'title' => fake()->title,
-            'slug' => fake()->slug,
+            'title' => fake()->word(1),
+            'slug' => fake()->slug
         ];
     }
 }

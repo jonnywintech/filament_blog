@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources;
 
-use App\Models\Tag;
 use Filament\Forms;
 use App\Models\Post;
 use Filament\Tables;
+use App\Models\Category;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
@@ -37,15 +37,15 @@ class PostResource extends Resource
         return $form
             ->schema([
                 TextInput::make('title')->required(),
-                FileUpload::make('thumbnail'),
-                ColorPicker::make('color'),
+                FileUpload::make('thumbnail')->required(),
+                ColorPicker::make('color')->required(),
                 TextInput::make('slug'),
-                Select::make('tag_id')
-                    ->label('Select tag')
-                    ->options(Tag::all()->pluck('title', 'id'))
-                    ->searchable(),
-                MarkdownEditor::make('content'),
-                TagsInput::make('tags')->required(),
+                Select::make('category_id')
+                    ->label('Select category')
+                    ->options(Category::all()->pluck('title', 'id'))
+                    ->searchable()->required(),
+                MarkdownEditor::make('content')->required(),
+                TagsInput::make('tags')->separator(',')->splitKeys(['Tab', ' '])->required(),
                 Checkbox::make('published'),
 
             ]);
@@ -55,7 +55,9 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id'),
                 TextColumn::make('title'),
+                TextColumn::make('categories.title'),
                 TextColumn::make('slug'),
                 ColorColumn::make('color'),
                 ImageColumn::make('thumbnail')->disk('public'),
