@@ -16,8 +16,11 @@ class TagFactory extends Factory
      */
     public function definition(): array
     {
+        $id = rand(1,10);
+
         return [
-            //
+            'title' => fake()->title,
+            'slug' => fake()->slug,
         ];
     }
 }

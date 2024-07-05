@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('color');
             $table->string('slug');
-            $table->foreignId('tag_id')->constrained('tags')->onDelete('cascade');
+            $table->foreignId('tag_id')->constrained('tags')->onCascade('delete');
             $table->text('content');
             $table->json('tags');
             $table->boolean('published')->default(false);
