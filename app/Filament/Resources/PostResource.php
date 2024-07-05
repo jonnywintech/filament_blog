@@ -39,7 +39,10 @@ class PostResource extends Resource
         return $form
             ->schema([
                 Section::make()->schema([
-                    TextInput::make('title')->required(),
+                    TextInput::make('title')->rules('min:3|max:125')
+                    ->minLength(3)
+                    ->maxLength(125)
+                    ->unique(ignoreRecord: true)->required(),
                     ColorPicker::make('color')->required(),
                     TextInput::make('slug'),
                     Select::make('category_id')
