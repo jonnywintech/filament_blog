@@ -24,6 +24,8 @@ use Filament\Forms\Components\MarkdownEditor;
 use App\Filament\Resources\PostResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PostResource\RelationManagers;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Section;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class PostResource extends Resource
@@ -36,19 +38,28 @@ class PostResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('title')->required(),
-                FileUpload::make('thumbnail')->required(),
-                ColorPicker::make('color')->required(),
-                TextInput::make('slug'),
-                Select::make('category_id')
-                    ->label('Select category')
-                    ->options(Category::all()->pluck('title', 'id'))
-                    ->searchable()->required(),
-                MarkdownEditor::make('content')->required(),
-                TagsInput::make('tags')->separator(',')->splitKeys(['Tab', ' '])->required(),
-                Checkbox::make('published'),
-
-            ]);
+                Section::make()->schema([
+                    TextInput::make('title')->required(),
+                    ColorPicker::make('color')->required(),
+                    TextInput::make('slug'),
+                    Select::make('category_id')
+                        ->label('Select category')
+                        ->options(Category::all()->pluck('title', 'id'))
+                        ->searchable()->required(),
+                    MarkdownEditor::make('content')
+                        ->columnSpanFull()
+                        ->required(),
+                ])->columns(2)->columnSpan(2),
+                Group::make()->schema([
+                    Section::make()->schema([
+                        FileUpload::make('thumbnail')->required(),
+                    ])->columnSpan(1),
+                    Section::make()->schema([
+                        TagsInput::make('tags')->separator(',')->splitKeys(['Tab', ' '])->required(),
+                        Checkbox::make('published'),
+                    ])->columnSpan(1),
+                ])->columnSpan(1),
+            ])->columns(3);
     }
 
     public static function table(Table $table): Table
@@ -57,7 +68,7 @@ class PostResource extends Resource
             ->columns([
                 TextColumn::make('id'),
                 TextColumn::make('title'),
-                TextColumn::make('categories.title'),
+                TextColumn::make('category.title'),
                 TextColumn::make('slug'),
                 ColorColumn::make('color'),
                 ImageColumn::make('thumbnail')->disk('public'),
@@ -90,5 +101,4 @@ class PostResource extends Resource
             'edit' => Pages\EditPost::route('/{record}/edit'),
         ];
     }
-
 }
