@@ -15,6 +15,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\ColorColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\ColorPicker;
@@ -55,6 +57,8 @@ class PostResource extends Resource
             ->columns([
                 TextColumn::make('title'),
                 TextColumn::make('slug'),
+                ColorColumn::make('color'),
+                ImageColumn::make('thumbnail')->disk('public'),
             ])
             ->filters([
                 //
