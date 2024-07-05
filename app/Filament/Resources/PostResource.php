@@ -40,9 +40,9 @@ class PostResource extends Resource
             ->schema([
                 Section::make()->schema([
                     TextInput::make('title')->rules('min:3|max:125')
-                    ->minLength(3)
-                    ->maxLength(125)
-                    ->unique(ignoreRecord: true)->required(),
+                        ->minLength(3)
+                        ->maxLength(125)
+                        ->unique(ignoreRecord: true)->required(),
                     ColorPicker::make('color')->required(),
                     TextInput::make('slug'),
                     Select::make('category_id')
@@ -69,12 +69,23 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id'),
-                TextColumn::make('title'),
+                TextColumn::make('id')->label('ID')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('title')->searchable()
+                    ->sortable(),
                 TextColumn::make('category.title'),
                 TextColumn::make('slug'),
                 ColorColumn::make('color'),
-                ImageColumn::make('thumbnail')->disk('public'),
+                ImageColumn::make('thumbnail')->disk('public')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')->label('Created Date')
+                    ->sortable(),
+                TextColumn::make('updated_at')->label('Updated Date')
+                    ->date()
+                    ->sortable()
+                    ->sortable(),
             ])
             ->filters([
                 //
