@@ -9,10 +9,12 @@ use App\Models\Category;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TagsInput;
@@ -26,8 +28,8 @@ use Filament\Forms\Components\MarkdownEditor;
 use App\Filament\Resources\PostResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PostResource\RelationManagers;
-use App\Filament\Resources\PostResource\RelationManagers\AuthorsRelationManager;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use App\Filament\Resources\PostResource\RelationManagers\AuthorsRelationManager;
 
 class PostResource extends Resource
 {
@@ -39,51 +41,53 @@ class PostResource extends Resource
     {
         return $form
             ->schema([
-                Section::make()->schema([
 
-                    TextInput::make('title')->rules('min:3|max:125')
-                        ->minLength(3)
-                        ->maxLength(125)
-                        ->unique(ignoreRecord: true)
-                        ->required(),
+                Tabs::make('Create new post')->tabs([
+                    Tab::make('Basic information')
+                        ->icon('heroicon-s-document-text')
+                        ->schema([
+                            TextInput::make('title')->rules('min:3|max:125')
+                                ->minLength(3)
+                                ->maxLength(125)
+                                ->unique(ignoreRecord: true)
+                                ->required(),
 
-                    ColorPicker::make('color')->required(),
+                            ColorPicker::make('color')->required(),
 
-                    TextInput::make('slug')->required(),
+                            TextInput::make('slug')->required(),
 
-                    Select::make('category_id')
-                        ->label('Select category')
-                        ->relationship('category', 'title')
-                        ->searchable()
-                        ->preload()
-                        ->required(),
+                            Select::make('category_id')
+                                ->label('Select category')
+                                ->relationship('category', 'title')
+                                ->searchable()
+                                ->preload()
+                                ->required(),
 
-                    MarkdownEditor::make('content')
-                        ->columnSpanFull()
-                        ->required(),
 
-                ])->columns(2)->columnSpan(2),
+                        ]),
 
-                Group::make()->schema([
+                    Tab::make('Content')
+                    ->icon('heroicon-s-pencil-square')
+                    ->schema([
+                        MarkdownEditor::make('content')
+                            ->columnSpanFull()
+                            ->required(),
+                    ]),
 
-                    Section::make()->schema([
-
-                        FileUpload::make('thumbnail')->required(),
-
-                    ])->columnSpan(1),
-
-                    Section::make()->schema([
-
+                    Tab::make('Meta')
+                    ->icon('heroicon-s-document-chart-bar')
+                    ->schema([
                         TagsInput::make('tags')->separator(',')
                             ->splitKeys(['Tab', ' '])
                             ->required(),
 
+                        FileUpload::make('thumbnail')->required(),
+
                         Checkbox::make('published'),
 
-                    ])->columnSpan(1),
+                    ]),
 
-                ])->columnSpan(1),
-
+                ])->columnSpanFull()->activeTab(3)->persistTabInQueryString(),
             ])->columns(3);
     }
 
