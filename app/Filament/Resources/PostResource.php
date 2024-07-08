@@ -39,29 +39,50 @@ class PostResource extends Resource
         return $form
             ->schema([
                 Section::make()->schema([
+
                     TextInput::make('title')->rules('min:3|max:125')
                         ->minLength(3)
                         ->maxLength(125)
-                        ->unique(ignoreRecord: true)->required(),
+                        ->unique(ignoreRecord: true)
+                        ->required(),
+
                     ColorPicker::make('color')->required(),
+
                     TextInput::make('slug'),
+
                     Select::make('category_id')
                         ->label('Select category')
-                        ->options(Category::all()->pluck('title', 'id'))
-                        ->searchable()->required(),
+                        ->relationship('category', 'title')
+                        ->searchable()
+                        ->preload()
+                        ->required(),
+
                     MarkdownEditor::make('content')
                         ->columnSpanFull()
                         ->required(),
+
                 ])->columns(2)->columnSpan(2),
+
                 Group::make()->schema([
+
                     Section::make()->schema([
+
                         FileUpload::make('thumbnail')->required(),
+
                     ])->columnSpan(1),
+
                     Section::make()->schema([
-                        TagsInput::make('tags')->separator(',')->splitKeys(['Tab', ' '])->required(),
+
+                        TagsInput::make('tags')->separator(',')
+                            ->splitKeys(['Tab', ' '])
+                            ->required(),
+
                         Checkbox::make('published'),
+
                     ])->columnSpan(1),
+
                 ])->columnSpan(1),
+
             ])->columns(3);
     }
 
