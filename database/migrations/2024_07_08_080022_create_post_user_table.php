@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()
                 ->constrained()
                 ->onDelete('set null');
+            $table->integer('order')->default(0);
             $table->timestamps();
         });
     }

@@ -24,7 +24,7 @@ class Post extends Model
 
     public function authors()
     {
-        return $this->belongsToMany(User::class, 'post_user');
+        return $this->belongsToMany(User::class, 'post_user')->withPivot(['order']);
     }
 
 }

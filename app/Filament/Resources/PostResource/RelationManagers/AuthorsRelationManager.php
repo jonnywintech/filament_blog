@@ -20,9 +20,9 @@ class AuthorsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\TextInput::make('order')
+                    ->numeric()
+                    ->required(),
             ]);
     }
 
@@ -32,12 +32,19 @@ class AuthorsRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
-            ])
+                Tables\Columns\TextColumn::make('email'),
+                Tables\Columns\TextColumn::make('order')
+                    ->sortable()
+            ])->defaultSort('order', 'asc')
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make(),
+                Tables\Actions\AttachAction::make()
+                    ->form(fn (AttachAction $action): array => [
+                        $action->getRecordSelect(),
+                        Forms\Components\TextInput::make('order')->numeric()->required()
+                    ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -49,5 +56,4 @@ class AuthorsRelationManager extends RelationManager
                 // ]),
             ]);
     }
-
 }
