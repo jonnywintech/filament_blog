@@ -30,6 +30,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PostResource\RelationManagers;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use App\Filament\Resources\PostResource\RelationManagers\AuthorsRelationManager;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 
 class PostResource extends Resource
 {
@@ -67,25 +70,25 @@ class PostResource extends Resource
                         ]),
 
                     Tab::make('Content')
-                    ->icon('heroicon-s-pencil-square')
-                    ->schema([
-                        MarkdownEditor::make('content')
-                            ->columnSpanFull()
-                            ->required(),
-                    ]),
+                        ->icon('heroicon-s-pencil-square')
+                        ->schema([
+                            MarkdownEditor::make('content')
+                                ->columnSpanFull()
+                                ->required(),
+                        ]),
 
                     Tab::make('Meta')
-                    ->icon('heroicon-s-document-chart-bar')
-                    ->schema([
-                        TagsInput::make('tags')->separator(',')
-                            ->splitKeys(['Tab', ' '])
-                            ->required(),
+                        ->icon('heroicon-s-document-chart-bar')
+                        ->schema([
+                            TagsInput::make('tags')->separator(',')
+                                ->splitKeys(['Tab', ' '])
+                                ->required(),
 
-                        FileUpload::make('thumbnail')->required(),
+                            FileUpload::make('thumbnail')->required(),
 
-                        Checkbox::make('published'),
+                            Checkbox::make('published'),
 
-                    ]),
+                        ]),
 
                 ])->columnSpanFull()->activeTab(3)->persistTabInQueryString(),
             ])->columns(3);
@@ -114,7 +117,17 @@ class PostResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
+                // Filter::make('Published Posts')->query(
+                //     function($query): Builder {
+                //         return $query->where('published', true);
+                //     }
+                // ),
+                SelectFilter::make('category_id')
+                ->label('Category')
+                ->relationship('category', 'title')
+                ->searchable()
+                ->preload(),
+                TernaryFilter::make('published')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
