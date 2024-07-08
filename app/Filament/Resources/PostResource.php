@@ -9,7 +9,9 @@ use App\Models\Category;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
@@ -24,8 +26,6 @@ use Filament\Forms\Components\MarkdownEditor;
 use App\Filament\Resources\PostResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PostResource\RelationManagers;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Section;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class PostResource extends Resource
@@ -48,7 +48,7 @@ class PostResource extends Resource
 
                     ColorPicker::make('color')->required(),
 
-                    TextInput::make('slug'),
+                    TextInput::make('slug')->required(),
 
                     Select::make('category_id')
                         ->label('Select category')
@@ -78,6 +78,15 @@ class PostResource extends Resource
                             ->required(),
 
                         Checkbox::make('published'),
+
+                    ])->columnSpan(1),
+
+                    Section::make()->schema([
+
+                        Select::make('authors')
+                        ->relationship('authors', 'name')
+                        ->multiple()
+                        ->preload()
 
                     ])->columnSpan(1),
 
