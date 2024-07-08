@@ -26,6 +26,7 @@ use Filament\Forms\Components\MarkdownEditor;
 use App\Filament\Resources\PostResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PostResource\RelationManagers;
+use App\Filament\Resources\PostResource\RelationManagers\AuthorsRelationManager;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class PostResource extends Resource
@@ -81,15 +82,6 @@ class PostResource extends Resource
 
                     ])->columnSpan(1),
 
-                    Section::make()->schema([
-
-                        Select::make('authors')
-                        ->relationship('authors', 'name')
-                        ->multiple()
-                        ->preload()
-
-                    ])->columnSpan(1),
-
                 ])->columnSpan(1),
 
             ])->columns(3);
@@ -133,7 +125,7 @@ class PostResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuthorsRelationManager::class,
         ];
     }
 
