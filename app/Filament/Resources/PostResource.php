@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PostResource\RelationManagers;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use App\Filament\Resources\PostResource\RelationManagers\AuthorsRelationManager;
+use App\Filament\Resources\PostResource\RelationManagers\CommentsRelationManager;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -143,6 +144,7 @@ class PostResource extends Resource
     {
         return [
             AuthorsRelationManager::class,
+            CommentsRelationManager::class,
         ];
     }
 
