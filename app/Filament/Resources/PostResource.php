@@ -5,11 +5,14 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\Post;
 use Filament\Tables;
+use Filament\Forms\Set;
 use App\Models\Category;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
@@ -22,8 +25,10 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\ColorPicker;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Forms\Components\MarkdownEditor;
 use App\Filament\Resources\PostResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -31,9 +36,6 @@ use App\Filament\Resources\PostResource\RelationManagers;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use App\Filament\Resources\PostResource\RelationManagers\AuthorsRelationManager;
 use App\Filament\Resources\PostResource\RelationManagers\CommentsRelationManager;
-use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
 
 class PostResource extends Resource
 {
@@ -54,7 +56,14 @@ class PostResource extends Resource
                                 ->minLength(3)
                                 ->maxLength(125)
                                 ->unique(ignoreRecord: true)
-                                ->required(),
+                                ->required()
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(
+                                    function (string $operation, string $state, Set $set) {
+                                        if ($operation === 'edit') return;
+                                        $set('slug', Str::slug($state));
+                                    }
+                                ),
 
                             ColorPicker::make('color')->required(),
 
@@ -66,8 +75,6 @@ class PostResource extends Resource
                                 ->searchable()
                                 ->preload()
                                 ->required(),
-
-
                         ]),
 
                     Tab::make('Content')
@@ -124,10 +131,10 @@ class PostResource extends Resource
                 //     }
                 // ),
                 SelectFilter::make('category_id')
-                ->label('Category')
-                ->relationship('category', 'title')
-                ->searchable()
-                ->preload(),
+                    ->label('Category')
+                    ->relationship('category', 'title')
+                    ->searchable()
+                    ->preload(),
                 TernaryFilter::make('published')
             ])
             ->actions([
