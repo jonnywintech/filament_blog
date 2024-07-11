@@ -9,15 +9,16 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Hash;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Checkbox;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\CheckboxColumn;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
-use Filament\Forms\Components\Toggle;
 
 class UserResource extends Resource
 {
@@ -48,7 +49,14 @@ class UserResource extends Resource
                 TextColumn::make('name'),
                 TextColumn::make('email'),
                 TextColumn::make('password')->visibleOn(['create', 'update']),
-                CheckboxColumn::make('is_admin')->disabled(),
+                TextColumn::make('is_admin')->label('Role')
+                    ->getStateUsing(fn (Model $record) => $record->is_admin ? 'Admin' : 'User')
+                    ->badge()
+                    ->color(fn (string $state) => match ($state) {
+                        'Admin' => 'success',
+                        'User' => 'info',
+                        default => 'danger',
+                    }),
             ])
             ->filters([
                 //
