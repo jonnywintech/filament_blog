@@ -17,6 +17,7 @@ use Filament\Tables\Columns\CheckboxColumn;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
+use Filament\Forms\Components\Toggle;
 
 class UserResource extends Resource
 {
@@ -35,7 +36,7 @@ class UserResource extends Resource
                     ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                     ->dehydrated(fn ($state) => filled($state))
                     ->required(fn (string $context): bool => $context === 'create'),
-                Checkbox::make('is_admin'),
+                Toggle::make('is_admin')->inline(false),
             ]);
     }
 
