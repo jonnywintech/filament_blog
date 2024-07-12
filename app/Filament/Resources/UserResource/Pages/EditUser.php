@@ -5,6 +5,7 @@ namespace App\Filament\Resources\UserResource\Pages;
 use Filament\Actions;
 use App\Filament\Widgets\TestWidget;
 use App\Filament\Resources\UserResource;
+use App\Filament\Resources\UserResource\Widgets\PostCount;
 use Filament\Resources\Pages\EditRecord;
 
 class EditUser extends EditRecord
@@ -15,6 +16,13 @@ class EditUser extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            PostCount::class,
         ];
     }
 
