@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use App\Models\Post;
+use App\Models\User;
 use Filament\Tables;
 use Filament\Forms\Set;
 use App\Models\Category;

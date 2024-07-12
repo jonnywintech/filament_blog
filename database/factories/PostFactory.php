@@ -29,6 +29,7 @@ class PostFactory extends Factory
             'content' => fake()->text,
             'tags' => fake()->word(1) . ',' . fake()->word(1),
             'published' => true,
+            'created_at' => fake()->unique()->dateTimeBetween($startDate = '-1 years', $endDate = 'now', $timezone = null)
         ];
     }
 }
