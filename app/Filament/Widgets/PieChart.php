@@ -2,37 +2,53 @@
 
 namespace App\Filament\Widgets;
 
+use Carbon\Carbon;
 use App\Models\Post;
 use Filament\Widgets\ChartWidget;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 
 class PieChart extends ChartWidget
 {
+
+    use InteractsWithPageFilters;
+
     protected static ?string $heading = 'Chart';
     protected static ?int $sort = 3;
 
     protected function getData(): array
     {
+        $start = $this->filters['start_date'] ?: '';
+        $end = $this->filters['end_date'] ?: '';
 
+        // Initialize labels and data arrays
         $labels = [];
-
         $data = [];
 
-        $values = [];
+        // Convert start and end filters to Carbon instances
+        $startDate = $start ? Carbon::parse($start) : null;
+        $endDate = $end ? Carbon::parse($end) : null;
 
-        $posts = Post::all()->groupBy('created_at');
+        // Query posts with optional date filters
+        $postsQuery = Post::query();
+
+        if ($startDate) {
+            $postsQuery->where('created_at', '>=', $startDate);
+        }
+
+        if ($endDate) {
+            $postsQuery->where('created_at', '<=', $endDate);
+        }
+
+        $posts = $postsQuery->get()->groupBy(function ($date) {
+            return Carbon::parse($date->created_at)->format('F'); // Group posts by month
+        });
 
         foreach ($posts as $key => $value) {
-            $new_key = \Carbon\Carbon::parse($key)->format('F');
-            if (!isset($data[$new_key])) {
-                $data[$new_key] = 0;
-            }
-            $data[$new_key] += $value->count();
+            $data[$key] = $value->count();
         }
 
         $labels = array_keys($data);
-
         $values = array_values($data);
-
 
         return [
             'datasets' => [
