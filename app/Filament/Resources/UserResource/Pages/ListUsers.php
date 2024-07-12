@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
+use App\Filament\Widgets\TestWidget;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -16,4 +17,12 @@ class ListUsers extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            TestWidget::class,
+        ];
+    }
+
 }
