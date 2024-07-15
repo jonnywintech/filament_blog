@@ -10,14 +10,18 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Toggle;
+use App\Filament\Exports\UserExporter;
 use Filament\Forms\Components\Checkbox;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\ExportAction;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\CheckboxColumn;
+use Filament\Tables\Actions\ExportBulkAction;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Tables\Actions\SynchronousExportAction;
 use App\Filament\Resources\UserResource\RelationManagers;
 
 class UserResource extends Resource
@@ -63,6 +67,10 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+
+            ])
+            ->headerActions([
+                ExportAction::make()->exporter(UserExporter::class),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

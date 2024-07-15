@@ -2,10 +2,11 @@
 
 namespace App\Filament\Resources\UserResource\Pages;
 
-use App\Filament\Resources\UserResource;
-use App\Filament\Widgets\TestWidget;
 use Filament\Actions;
+use App\Filament\Widgets\TestWidget;
+use App\Filament\Resources\UserResource;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Tables\Actions\SynchronousExportAction;
 
 class ListUsers extends ListRecords
 {
@@ -22,6 +23,13 @@ class ListUsers extends ListRecords
     {
         return [
             TestWidget::class,
+        ];
+    }
+
+    protected function getActions(): array
+    {
+        return [
+            SynchronousExportAction::make(),
         ];
     }
 
